@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t your_dockerhub_username/guestbook-go .
+        run: docker build -t imfuzail/guestbook-go .
 
       - name: Push Docker image
-        run: docker push your_dockerhub_username/guestbook-go
+        run: docker push imfuzail/guestbook-go
