@@ -15,10 +15,12 @@
 # Stage 1: Build the Go application
 FROM golang:1.10.0 AS builder
 WORKDIR /app
-RUN go get github.com/codegangsta/negroni \
-           github.com/gorilla/mux \
-           github.com/xyproto/simpleredis
 
+# Install the required packages
+RUN go get github.com/codegangsta/negroni \
+           github.com/gorilla/mux
+
+# Add the main.go file
 ADD ./main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
