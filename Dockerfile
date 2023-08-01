@@ -12,17 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.10.0
-RUN go get github.com/codegangsta/negroni \
-           github.com/gorilla/mux \
-
+# Stage 1: Build the Go application
+FROM golang:1.10.0 AS builder
 WORKDIR /app
+RUN go get github.com/codegangsta/negroni \
+           github.com/gorilla/mux
 ADD ./main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
+# Stage 2: Create a minimal container to run the Go application
 FROM scratch
 WORKDIR /app
-COPY --from=0 /app/main .
+COPY --from=builder /app/main .
 COPY ./public/index.html public/index.html
 COPY ./public/script.js public/script.js
 COPY ./public/style.css public/style.css
