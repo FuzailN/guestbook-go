@@ -19,7 +19,7 @@ WORKDIR /app
 # Install the required packages
 RUN go get github.com/codegangsta/negroni \
            github.com/gorilla/mux \
-           github.com/xyproto/simpleredis
+           https://github.com/xyproto/simpleredis/tree/main/v2
 
 ADD ./main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
