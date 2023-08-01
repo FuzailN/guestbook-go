@@ -24,7 +24,7 @@ import (
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
-	"https://github.com/xyproto/simpleredis/tree/main/v2"
+	"github.com/xyproto/simpleredis/v2"
 )
 
 var (
