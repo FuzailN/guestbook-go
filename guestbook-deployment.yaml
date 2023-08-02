@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: guestbook
-          image: imfuzail/guestbook-go:latest
+          image: imfuzail/guestbook-go
           ports:
             - containerPort: 3000
