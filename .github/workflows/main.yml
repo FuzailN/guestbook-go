@@ -20,8 +20,9 @@ jobs:
         run: |
           if [[ ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }} || ${{ contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE') }} ]]; then
             echo "Building Docker image"
-            docker build -t imfuzail/guestbook-go:latest .
-            docker push imfuzail/guestbook-go:latest
+            docker build -t $DOCKERHUB_USERNAME/guestbook-go:latest .
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push $DOCKERHUB_USERNAME/guestbook-go:latest
           else
             echo "Skipping Docker image build"
             exit 0
