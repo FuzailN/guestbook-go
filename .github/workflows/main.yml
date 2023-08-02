@@ -31,7 +31,7 @@ jobs:
         
       - name: Check commit message and build image conditionally
         run: |
-          if [[ ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true }} || ${{ contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE') }} ]]; then
+          if [[ ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' }} || ${{ contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE') }} ]]; then
             echo "Building Docker image"
           else
             echo "Skipping Docker image build"
