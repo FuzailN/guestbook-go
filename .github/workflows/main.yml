@@ -12,12 +12,23 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
-    # Conditionally execute the job based on your criteria
-    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == 'true') || contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE')
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Check PR merge or commit message
+        id: check-condition
+        run: |
+          if [[ ${{ github.event_name }} == 'pull_request' && ${{ github.event.pull_request.merged }} == 'true' ]]; then
+            echo "PR merged to main branch"
+            echo "::set-output name=condition_met::true"
+          elif [[ ${{ contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE') }} == 'true' ]]; then
+            echo "Commit message contains 'BUILD_CONTAINER_IMAGE'"
+            echo "::set-output name=condition_met::true"
+          else
+            echo "Condition not met"
+            echo "::set-output name=condition_met::false"
+          fi
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -26,6 +37,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and push Docker image
+        if: steps.check-condition.outputs.condition_met == 'true'
         uses: docker/build-push-action@v2
         with:
           context: .
