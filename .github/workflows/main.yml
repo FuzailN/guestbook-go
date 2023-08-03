@@ -14,8 +14,9 @@ jobs:
 
     # Conditionally execute the job based on your criteria
     if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == 'true') ||
-      contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE')
+      github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.base.ref == 'main' &&
+      (github.event.pull_request.merged == true || contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE'))
+
 
     steps:
       - name: Checkout code
