@@ -1,38 +1,33 @@
 name: Build and Push Docker Image
 
 on:
-  pull_request:
-    types:
-      - closed
   push:
     branches:
       - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
-    
+
+    # Corrected conditional expression
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == 'true' || contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE')
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Build and push Docker image
-      if: >
-        github.event_name == 'push' &&
-        (
-          contains(github.event.head_commit.message, 'BUILD_CONTAINER_IMAGE') ||
-          (
-            github.event_name == 'pull_request' &&
-            github.event.action == 'closed' &&
-            github.event.pull_request.base.ref == 'main'
-          )
-        )
-      run: |
-        docker build -t your-dockerhub-username/guestbook-app:${{ github.sha }} .
-        docker push your-dockerhub-username/guestbook-app:${{ github.sha }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: imfuzail/guestbook-go:latest
